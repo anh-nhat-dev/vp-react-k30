@@ -1,6 +1,21 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 export default function Header() {
+  const history = useHistory();
+
+  const [key, setKey] = React.useState(null);
+
+  function onSubmit(e) {
+    e.preventDefault();
+    history.push(`/search?key=${key}`);
+  }
+
+  function onChangeInput(e) {
+    const { value } = e.target;
+    setKey(value);
+  }
+
   return (
     <div id="header">
       <div className="container">
@@ -13,12 +28,14 @@ export default function Header() {
             </h1>
           </div>
           <div id="search" className="col-lg-6 col-md-6 col-sm-12">
-            <form className="form-inline">
+            <form onSubmit={onSubmit} className="form-inline">
               <input
                 className="form-control mt-3"
                 type="search"
                 placeholder="Tìm kiếm"
                 aria-label="Search"
+                onChange={onChangeInput}
+                name="key"
               />
               <button className="btn btn-danger mt-3" type="submit">
                 Tìm kiếm
