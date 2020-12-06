@@ -4,7 +4,7 @@ export default function ProductList({ data = [] }) {
   return (
     <div className="product-list card-deck">
       {data.map((item) => (
-        <ProductItem product={item} />
+        <ProductItem key={item._id} product={item} />
       ))}
     </div>
   );

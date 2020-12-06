@@ -16,28 +16,23 @@ const Pagination = ({ limit = 10, totalDocument = 0 }) => {
   }
 
   function renderPage() {
-    const pages = [],
-      pagesWithDot = [];
+    const pages = [];
     const left = page - 2;
     const right = page + 2;
 
     for (let i = 1; i <= totalPage; i++) {
       if (i === 1 || i === totalPage || (i >= left && i <= right)) {
+        if (i === left && i - pages[pages.length - 1] > 1) {
+          pages.push("...");
+        }
         pages.push(i);
+        if (i === right && totalPage - i > 1) {
+          pages.push("...");
+        }
       }
     }
 
-    let i = 0;
-    while (i < pages.length) {
-      pagesWithDot.push(pages[i]);
-      if (pages[i + 1] - pages[i] > 1) {
-        pagesWithDot.push("...");
-      }
-
-      ++i;
-    }
-
-    return pagesWithDot.map((i) => (
+    return pages.map((i) => (
       <li className={`page-item ${page === i ? "active" : null} `}>
         <Link className="page-link" to={makeUrl(i)}>
           {i}
@@ -48,17 +43,21 @@ const Pagination = ({ limit = 10, totalDocument = 0 }) => {
 
   return (
     <ul className="pagination">
-      <li className="page-item">
-        <a className="page-link" href="#">
-          Trang trước
-        </a>
-      </li>
+      {page > 1 && (
+        <li className="page-item">
+          <Link className="page-link" to={makeUrl(page - 1)}>
+            Trang trước
+          </Link>
+        </li>
+      )}
       {renderPage()}
-      <li className="page-item">
-        <a className="page-link" href="#">
-          Trang sau
-        </a>
-      </li>
+      {page < totalPage && (
+        <li className="page-item">
+          <Link className="page-link" to={makeUrl(page + 1)}>
+            Trang sau
+          </Link>
+        </li>
+      )}
     </ul>
   );
 };
