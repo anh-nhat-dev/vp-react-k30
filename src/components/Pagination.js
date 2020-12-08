@@ -32,8 +32,8 @@ const Pagination = ({ limit = 10, totalDocument = 0 }) => {
       }
     }
 
-    return pages.map((i) => (
-      <li className={`page-item ${page === i ? "active" : null} `}>
+    return pages.map((i, index) => (
+      <li key={index} className={`page-item ${page === i ? "active" : null} `}>
         <Link className="page-link" to={makeUrl(i)}>
           {i}
         </Link>

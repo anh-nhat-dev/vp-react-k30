@@ -15,3 +15,11 @@ export const getCommentByProductId = (id, config) =>
 
 export const createCommentByProductId = (id, data, config) =>
   axios.post(`/products/${id}/comments`, data, config);
+
+export const getCategories = (config) => {
+  return axios.get("/categories", config);
+};
+
+export const getCategory = (id, config) => {
+  return axios.get(`/categories/${id}`, config);
+};

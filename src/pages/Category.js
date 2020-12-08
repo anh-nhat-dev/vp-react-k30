@@ -1,144 +1,72 @@
 import React from "react";
+import queryString from "query-string";
+import { Helmet } from "react-helmet";
 
-export default function Category() {
+import Pagination from "../components/Pagination";
+import { getCategory, getProducts } from "../services/Api";
+import ProductList from "../components/ProductList";
+
+export default function Category({ match, history, location }) {
+  const [category, setCategory] = React.useState();
+  const [products, setProducts] = React.useState([]);
+  const [pages, setPages] = React.useState({
+    limit: 12,
+    totalDocument: 0,
+  });
+
+  const search = queryString.parse(location.search);
+
+  const { page } = search;
+  const { id } = match?.params;
+
+  const _getProducts = () => {
+    getProducts({
+      params: {
+        "filter[category_id]": id,
+        limit: pages.limit,
+        page: page,
+      },
+    }).then((res) => {
+      if (res?.data?.data?.docs) {
+        setProducts(res.data.data.docs);
+      }
+      if (res?.data?.data?.pages) {
+        setPages({ ...pages, totalDocument: res.data.data.pages.total });
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    getCategory(id)
+      .then((res) => {
+        if (res?.data?.data) {
+          setCategory(res.data.data);
+        }
+      })
+      .catch((err) => history.push("/404"));
+    _getProducts();
+  }, [id]);
+
+  React.useEffect(() => {
+    _getProducts();
+  }, [page]);
+
   return (
     <div>
+      <Helmet>
+        <title>{category?.name}</title>
+      </Helmet>
       <div className="products">
-        <h3>iPhone (hiện có 186 sản phẩm)</h3>
-        <div className="product-list card-deck">
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-1.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-2.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-3.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-        </div>
-        <div className="product-list card-deck">
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-4.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-5.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-6.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-        </div>
-        <div className="product-list card-deck">
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-7.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-8.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-          <div className="product-item card text-center">
-            <a href="#">
-              <img src="images/product-9.png" />
-            </a>
-            <h4>
-              <a href="#">iPhone Xs Max 2 Sim - 256GB</a>
-            </h4>
-            <p>
-              Giá Bán: <span>32.990.000đ</span>
-            </p>
-          </div>
-        </div>
+        <h3>
+          {category?.name} (hiện có {pages.totalDocument} sản phẩm)
+        </h3>
+
+        <ProductList data={products} />
       </div>
       {/*	End List Product	*/}
       <div id="pagination">
         <ul className="pagination">
-          <li className="page-item">
-            <a className="page-link" href="#">
-              Trang trước
-            </a>
-          </li>
-          <li className="page-item active">
-            <a className="page-link" href="#">
-              1
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              2
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              3
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              Trang sau
-            </a>
-          </li>
+          <Pagination {...pages} />
         </ul>
       </div>
     </div>

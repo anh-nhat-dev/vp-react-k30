@@ -17,13 +17,26 @@ import Menu from "./components/layout/Menu";
 import Slider from "./components/layout/Slider";
 import SideBar from "./components/layout/SideBar";
 
+// Services
+import { getCategories } from "./services/Api";
+
 export default function Router() {
+  const [categories, setCategories] = React.useState([]);
+
+  React.useEffect(() => {
+    getCategories().then((res) => {
+      if (res?.data?.data?.docs) {
+        setCategories(res.data.data.docs);
+      }
+    });
+  }, []);
+
   return (
     <BrowserRouter>
       <Header />
       <div id="body">
         <div className="container">
-          <Menu />
+          <Menu data={categories} />
           <div className="row">
             <div id="main" className="col-lg-8 col-md-12 col-sm-12">
               <Slider />
