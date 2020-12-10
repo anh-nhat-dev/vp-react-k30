@@ -1,8 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Header() {
   const history = useHistory();
+  const { items } = useSelector((state) => state.cart);
 
   const [key, setKey] = React.useState(null);
 
@@ -46,7 +48,7 @@ export default function Header() {
             <a className="mt-4 mr-2" href="#">
               giỏ hàng
             </a>
-            <span className="mt-3">8</span>
+            <span className="mt-3">{items.reduce((a, c) => a + c.qty, 0)}</span>
           </div>
         </div>
       </div>

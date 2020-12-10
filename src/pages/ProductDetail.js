@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+
 import {
   getProduct,
   getCommentByProductId,
@@ -6,11 +8,6 @@ import {
 } from "../services/Api";
 
 export default function ProductDetail(props) {
-  console.log(
-    "🚀 ~ file: ProductDetail.js ~ line 4 ~ ProductDetail ~ props",
-    props
-  );
-
   const [product, setProduct] = React.useState(null);
   const [comments, setComments] = React.useState([]);
   const [input, setInput] = React.useState({
@@ -18,6 +15,9 @@ export default function ProductDetail(props) {
     email: "",
     name: "",
   });
+  const [qty, setQty] = React.useState(1);
+
+  const dispatch = useDispatch();
 
   const id = props?.match?.params?.id;
 
@@ -62,6 +62,28 @@ export default function ProductDetail(props) {
     setInput({ ...input, [name]: value });
   }
 
+  function onChangeQuantity(e) {
+    const value = e.target.value;
+    setQty(parseInt(value));
+  }
+
+  function onAddToCart(e) {
+    e.preventDefault();
+
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: {
+        id: product._id,
+        qty: qty,
+        name: product.name,
+        price: product.price,
+        img: product.image,
+      },
+    });
+
+    setQty(1);
+  }
+
   return (
     <div>
       {/*	List Product	*/}
@@ -102,9 +124,22 @@ export default function ProductDetail(props) {
                 )}
               </li>
             </ul>
-            <div id="add-cart">
-              <a href="#">Mua ngay</a>
-            </div>
+            {product?.is_stock ? (
+              <form onSubmit={onAddToCart} className="form-inline row">
+                <div className="form-group mx-sm-3 mb-2">
+                  <input
+                    type="number"
+                    min={1}
+                    value={qty}
+                    className="form-control"
+                    onChange={onChangeQuantity}
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary mb-2">
+                  Add to cart
+                </button>
+              </form>
+            ) : null}
           </div>
         </div>
         <div id="product-body" className="row">

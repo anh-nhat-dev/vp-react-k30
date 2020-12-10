@@ -1,8 +1,9 @@
 import React from "react";
-import { getProducts } from "../services/Api";
+import { useSelector, useDispatch } from "react-redux";
 
 // Components
 import ProductList from "../components/ProductList";
+import { getProducts } from "../services/Api";
 
 export default function Home() {
   const [newProducts, setNewProducts] = React.useState([]);
