@@ -5,6 +5,7 @@ import "./assets/css/home.css";
 import "./assets/css/product.css";
 import "./assets/css/search.css";
 import "./assets/css/category.css";
+import "./assets/css/cart.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 

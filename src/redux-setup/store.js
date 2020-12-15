@@ -17,18 +17,33 @@ const cartReducer = function (state = initCartState, action) {
       const product = action.payload;
       const cart = state.items;
 
-      const check =
-        cart.length &&
-        cart.every(
-          (item) => item.id === product.id && (item.qty += product.qty)
-        );
+      let check = false;
+
+      cart.map((item) => {
+        if (item.id === product.id) {
+          check = true;
+          item.qty += product.qty;
+        }
+        return item;
+      });
 
       if (!check) {
         cart.push(product);
       }
-      console.log("🚀 ~ file: store.js ~ line 17 ~ cartReducer ~ cart", cart);
 
       return { ...state, items: cart };
+    case "DELETE_CART_ITEM":
+      const cart1 = state.items.filter((item) => item.id !== action.payload);
+      return { ...state, items: cart1 };
+    case "UPDATE_CART_ITEM":
+      const { id, qty } = action.payload;
+      const cart2 = state.items.map((item) => {
+        if (item.id === id) {
+          item.qty = qty;
+        }
+        return item;
+      });
+      return { ...state, items: cart2 };
     default:
       return state;
   }

@@ -23,3 +23,7 @@ export const getCategories = (config) => {
 export const getCategory = (id, config) => {
   return axios.get(`/categories/${id}`, config);
 };
+
+export const order = (data, config) => {
+  return axios.post("/order", data, config);
+};

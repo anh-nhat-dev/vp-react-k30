@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function Header() {
@@ -45,9 +45,9 @@ export default function Header() {
             </form>
           </div>
           <div id="cart" className="col-lg-3 col-md-3 col-sm-12">
-            <a className="mt-4 mr-2" href="#">
+            <Link className="mt-4 mr-2" to="/cart">
               giỏ hàng
-            </a>
+            </Link>
             <span className="mt-3">{items.reduce((a, c) => a + c.qty, 0)}</span>
           </div>
         </div>
