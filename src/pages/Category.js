@@ -9,9 +9,10 @@ import ProductList from "../components/ProductList";
 export default function Category({ match, history, location }) {
   const [category, setCategory] = React.useState();
   const [products, setProducts] = React.useState([]);
-  const [pages, setPages] = React.useState({
+  const [pages, setPages] = React.useReducer((o, n) => ({ ...o, ...n }), {
     limit: 12,
     totalDocument: 0,
+    loading: false,
   });
 
   const search = queryString.parse(location.search);
@@ -20,6 +21,7 @@ export default function Category({ match, history, location }) {
   const { id } = match?.params;
 
   const _getProducts = () => {
+    setPages({ loading: true });
     getProducts({
       params: {
         "filter[category_id]": id,
@@ -31,7 +33,7 @@ export default function Category({ match, history, location }) {
         setProducts(res.data.data.docs);
       }
       if (res?.data?.data?.pages) {
-        setPages({ ...pages, totalDocument: res.data.data.pages.total });
+        setPages({ loading: false, totalDocument: res.data.data.pages.total });
       }
     });
   };
@@ -61,7 +63,11 @@ export default function Category({ match, history, location }) {
           {category?.name} (hiện có {pages.totalDocument} sản phẩm)
         </h3>
 
-        <ProductList data={products} />
+        <ProductList
+          limit={pages.limit}
+          loading={pages.loading}
+          data={products}
+        />
       </div>
       {/*	End List Product	*/}
       <div id="pagination">

@@ -8,8 +8,16 @@ import { getProducts } from "../services/Api";
 export default function Home() {
   const [newProducts, setNewProducts] = React.useState([]);
   const [featureProducts, setFeatureProducts] = React.useState([]);
+  const [loading, setLoading] = React.useReducer((o, n) => ({ ...o, ...n }), {
+    loadNewProd: false,
+    loadFeaturePrd: false,
+  });
 
   React.useEffect(() => {
+    setLoading({
+      loadNewProd: true,
+      loadFeaturePrd: true,
+    });
     getProducts({
       params: {
         limit: 6,
@@ -17,6 +25,9 @@ export default function Home() {
     }).then(function (res) {
       if (res.data?.data?.docs) {
         setNewProducts(res.data.data.docs);
+        setLoading({
+          loadFeaturePrd: false,
+        });
       }
     });
 
@@ -28,6 +39,9 @@ export default function Home() {
     }).then(function (res) {
       if (res.data?.data?.docs) {
         setFeatureProducts(res.data.data.docs);
+        setLoading({
+          loadNewProd: false,
+        });
       }
     });
   }, []);
@@ -36,11 +50,11 @@ export default function Home() {
     <>
       <div className="products">
         <h3>Sản phẩm nổi bật</h3>
-        <ProductList data={featureProducts} />
+        <ProductList loading={loading.loadNewProd} data={featureProducts} />
       </div>
       <div className="products">
         <h3>Sản phẩm mới</h3>
-        <ProductList data={newProducts} />
+        <ProductList loading={loading.loadNewProd} data={newProducts} />
       </div>
     </>
   );
