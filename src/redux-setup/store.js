@@ -44,6 +44,8 @@ const cartReducer = function (state = initCartState, action) {
         return item;
       });
       return { ...state, items: cart2 };
+    case "RESET_CART":
+      return { ...state, items: [] };
     default:
       return state;
   }

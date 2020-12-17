@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { order } from "../services/Api";
 
-export default function Cart() {
+export default function Cart({ history }) {
   const dispatch = useDispatch();
 
   const [customer, setCusomter] = React.useReducer(
@@ -53,8 +53,12 @@ export default function Cart() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    order(customer).then((res) => {
-      console.log("🚀 ~ file: Cart.js ~ line 57 ~ order ~ res", res);
+    order({
+      ...customer,
+      items: cart.map((i) => ({ prd_id: i.id, qty: i.qty })),
+    }).then((res) => {
+      dispatch({ type: "RESET_CART" });
+      history.push("/order-success");
     });
   };
 
